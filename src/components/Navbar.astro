@@ -1,79 +1,104 @@
 ---
 const links = [
-{ label: "Inicio", href: "/" },
-{ label: "Sobre mí", href: "/#about" },
-{ label: "Proyectos", href: "/#projects" },
-{ label: "Educación", href: "/#education" },
-{ label: "Certificaciones", href: "/#certifications" },
-{ label: "Proyectos", href: "/#proyects" },
-{ label: "Contacto", href: "/#contact" }
+  { label: "Inicio", href: "/" },
+  { label: "Sobre mí", href: "/#about" },
+  { label: "Proyectos", href: "/#projects" },
+  { label: "Educación", href: "/#education" },
+  { label: "Certificaciones", href: "/#certifications" },
+  { label: "Contacto", href: "/#contact" }
 ];
 ---
 
+<header class="fixed top-0 left-0 w-full bg-white/80 dark:bg-neutral-950/80 backdrop-blur shadow dark:shadow-black/40 z-50 transition-colors">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 text-gray-900 dark:text-gray-100">
+    <a href="/" class="text-xl font-bold tracking-tight">
+      Javier RC
+    </a>
 
-<header class="fixed top-0 left-0 w-full bg-white shadow z-50">
-<nav class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-<!-- Logo -->
-<a href="/" class="text-xl font-bold"> 
-Javier RC
-</a>
+    <ul class="hidden md:flex gap-6 items-center">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition">
+            {link.label}
+          </a>
+        </li>
+      ))}
 
+      <li>
+        <button id="theme-toggle" aria-label="Cambiar tema" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </li>
+    </ul>
 
-<!-- Desktop menu -->
-<ul class="hidden md:flex gap-6 items-center">
-{links.map(link => (
-<li>
-<a
-href={link.href}
-class="text-gray-700 hover:text-black transition"
->
-{link.label}
-</a>
-</li>
-))}
-</ul>
+    <div class="md:hidden flex items-center gap-2">
+      <button id="theme-toggle-mobile" aria-label="Cambiar tema" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition">
+        <span id="theme-icon-mobile">🌙</span>
+      </button>
 
+      <button id="menu-btn" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition" aria-label="Abrir menú">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
 
-
-
-<!-- Mobile menu button -->
-<button
-id="menu-btn"
-class="md:hidden flex items-center focus:outline-none"
-aria-label="Abrir menú"
->
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-d="M4 6h16M4 12h16M4 18h16" />
-</svg>
-</button>
-</nav>
-
-
-<!-- Mobile menu -->
-<div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-<ul class="flex flex-col px-4 py-2 gap-2">
-{links.map(link => (
-<li>
-<a
-href={link.href}
-class="block py-2 text-gray-700 hover:text-black"
->
-{link.label}
-</a>
-</li>
-))}
-</ul>
-</div>
+  <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-neutral-950 border-t dark:border-neutral-800 transition-colors">
+    <ul class="flex flex-col px-4 py-2 gap-2">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} class="block py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition">
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </header>
 
-
 <script>
-const btn = document.getElementById('menu-btn');
-const menu = document.getElementById('mobile-menu');
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeToggleMobile = document.getElementById("theme-toggle-mobile");
 
+    // Menu toggle
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    }
 
-btn?.addEventListener('click', () => {
-menu?.classList.toggle('hidden');
-});
+    // Theme functions
+    function updateIcon() {
+      const isDark = root.classList.contains("dark");
+      const icon = document.getElementById("theme-icon");
+      const iconMobile = document.getElementById("theme-icon-mobile");
+      const emoji = isDark ? "☀️" : "🌙";
+      
+      if (icon) icon.textContent = emoji;
+      if (iconMobile) iconMobile.textContent = emoji;
+    }
+
+    function toggleTheme() {
+      const isDark = root.classList.toggle("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      updateIcon();
+    }
+
+    // Event listeners
+    if (themeToggle) {
+      themeToggle.addEventListener("click", toggleTheme);
+    }
+    
+    if (themeToggleMobile) {
+      themeToggleMobile.addEventListener("click", toggleTheme);
+    }
+
+    // Initialize icon
+    updateIcon();
+  });
 </script>
