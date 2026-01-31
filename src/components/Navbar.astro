@@ -1,0 +1,79 @@
+---
+const links = [
+{ label: "Inicio", href: "/" },
+{ label: "Sobre mí", href: "/#about" },
+{ label: "Proyectos", href: "/#projects" },
+{ label: "Educación", href: "/#education" },
+{ label: "Certificaciones", href: "/#certifications" },
+{ label: "Proyectos", href: "/#proyects" },
+{ label: "Contacto", href: "/#contact" }
+];
+---
+
+
+<header class="fixed top-0 left-0 w-full bg-white shadow z-50">
+<nav class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+<!-- Logo -->
+<a href="/" class="text-xl font-bold"> 
+Javier RC
+</a>
+
+
+<!-- Desktop menu -->
+<ul class="hidden md:flex gap-6 items-center">
+{links.map(link => (
+<li>
+<a
+href={link.href}
+class="text-gray-700 hover:text-black transition"
+>
+{link.label}
+</a>
+</li>
+))}
+</ul>
+
+
+
+
+<!-- Mobile menu button -->
+<button
+id="menu-btn"
+class="md:hidden flex items-center focus:outline-none"
+aria-label="Abrir menú"
+>
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M4 6h16M4 12h16M4 18h16" />
+</svg>
+</button>
+</nav>
+
+
+<!-- Mobile menu -->
+<div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+<ul class="flex flex-col px-4 py-2 gap-2">
+{links.map(link => (
+<li>
+<a
+href={link.href}
+class="block py-2 text-gray-700 hover:text-black"
+>
+{link.label}
+</a>
+</li>
+))}
+</ul>
+</div>
+</header>
+
+
+<script>
+const btn = document.getElementById('menu-btn');
+const menu = document.getElementById('mobile-menu');
+
+
+btn?.addEventListener('click', () => {
+menu?.classList.toggle('hidden');
+});
+</script>
