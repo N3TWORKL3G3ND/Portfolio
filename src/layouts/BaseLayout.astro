@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Navbar from "../components/Navbar.astro";
+import NeuralBackground from "../components/NeuralBackground.astro";
 const { title = "Mi Portafolio" } = Astro.props;
 ---
 <!DOCTYPE html>
@@ -11,6 +12,11 @@ const { title = "Mi Portafolio" } = Astro.props;
 <title>{title}</title>
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900">
+<!-- Fondo animado -->
+  <div class="fixed inset-0 -z-10">
+    <NeuralBackground />
+  </div>
+
 <Navbar />
 <main class="pt-16">
 <slot />

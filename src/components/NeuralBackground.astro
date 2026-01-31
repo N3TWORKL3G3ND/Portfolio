@@ -1,0 +1,94 @@
+---
+// NeuralBackground.astro
+---
+
+<canvas
+  id="neural-canvas"
+  class="fixed inset-0 w-full h-full pointer-events-none"
+></canvas>
+
+<script is:inline>
+  const canvas = document.getElementById("neural-canvas");
+  
+  if (!canvas) {
+    console.warn("Canvas not found");
+  } else {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      console.error("Could not get 2d context");
+    } else {
+      let width = 0;
+      let height = 0;
+      const points = [];
+      const POINTS = 60;
+      const MAX_DIST = 120;
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+
+      // Initialize points
+      for (let i = 0; i < POINTS; i++) {
+        points.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Update positions
+        for (const p of points) {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+        }
+
+        // Draw connections
+        for (let i = 0; i < POINTS; i++) {
+          for (let j = i + 1; j < POINTS; j++) {
+            const dx = points[i].x - points[j].x;
+            const dy = points[i].y - points[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < MAX_DIST) {
+              ctx.strokeStyle = `rgba(120,120,120,${1 - dist / MAX_DIST})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(points[i].x, points[i].y);
+              ctx.lineTo(points[j].x, points[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw points
+        for (const p of points) {
+          ctx.fillStyle = "rgba(120,120,120,0.8)";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    }
+  }
+</script>
+
+<style>
+  #neural-canvas {
+    z-index: -1;
+  }
+</style>
+
