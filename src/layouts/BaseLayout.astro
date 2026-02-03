@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
 import NeuralBackground from "../components/NeuralBackground.astro";
 const { title = "Mi Portafolio" } = Astro.props;
 ---
@@ -28,6 +29,7 @@ const { title = "Mi Portafolio" } = Astro.props;
     <main class="pt-16">
       <slot />
     </main>
+    <Footer />
   </div>
 
 </body>
