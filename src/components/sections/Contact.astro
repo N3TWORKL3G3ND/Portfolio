@@ -29,13 +29,12 @@
             </div>
             <div>
               <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Email</h4>
-              <a href="mailto:tu@email.com" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                rojascastrojavier13@email.com
+              <a href="mailto:rojascastrojavier13@gmail.com" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                rojascastrojavier13@gmail.com
               </a>
             </div>
           </div>
 
-          
           <!-- Ubicación -->
           <div class="flex items-start gap-4">
             <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
@@ -68,7 +67,7 @@
               </svg>
             </a>
             <a 
-              href="https://linkedin.com//in/javier-rojas-castro" 
+              href="https://linkedin.com/in/javier-rojas-castro" 
               target="_blank"
               class="p-3 bg-gray-100 dark:bg-neutral-800 rounded-lg hover:bg-gray-200 dark:hover:bg-neutral-700 transition"
               aria-label="LinkedIn"
@@ -79,6 +78,7 @@
             </a>            
           </div>
         </div>
+
       </div>
 
       <!-- Formulario - Derecha -->
@@ -86,7 +86,11 @@
         <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
           Enviar Mensaje
         </h3>
-        <form class="space-y-6">
+
+        <!-- Estado del formulario -->
+        <div id="form-status" class="hidden mb-4 p-4 rounded-lg"></div>
+
+        <form id="contact-form" class="space-y-6">
           <!-- Nombre -->
           <div>
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -95,7 +99,7 @@
             <input 
               type="text" 
               id="name" 
-              name="name"
+              name="from_name"
               required
               class="w-full px-4 py-3 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-gray-900 dark:text-white"
               placeholder="Tu nombre"
@@ -110,7 +114,7 @@
             <input 
               type="email" 
               id="email" 
-              name="email"
+              name="from_email"
               required
               class="w-full px-4 py-3 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-gray-900 dark:text-white"
               placeholder="tu@email.com"
@@ -150,9 +154,11 @@
           <!-- Botón enviar -->
           <button 
             type="submit"
-            class="w-full px-8 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold shadow-lg"
+            id="submit-btn"
+            class="w-full px-8 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Enviar Mensaje
+            <span id="btn-text">Enviar Mensaje</span>
+            <span id="btn-loading" class="hidden">Enviando...</span>
           </button>
         </form>
       </div>
@@ -160,25 +166,64 @@
   </div>
 </section>
 
-<script>
-  const form = document.querySelector('form');
+<!-- EmailJS CDN -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script is:inline>
+  // Declarar emailjs para TypeScript
+  /* global emailjs */
   
+  // Inicializar EmailJS
+  emailjs.init('E1lqEPWcXmfiisiIs');
+
+  const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const btnLoading = document.getElementById('btn-loading');
+  const formStatus = document.getElementById('form-status');
+
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const formData = new FormData(form);
-      const name = formData.get('name');
-      const email = formData.get('email');
-      const subject = formData.get('subject');
-      const message = formData.get('message');
+      // Deshabilitar botón
+      submitBtn.disabled = true;
+      btnText.classList.add('hidden');
+      btnLoading.classList.remove('hidden');
       
-      // Aquí puedes integrar con un servicio de email como EmailJS, Formspree, etc.
-      console.log('Formulario enviado:', { name, email, subject, message });
-      
-      // Por ahora, solo mostramos un alert
-      alert('¡Gracias por tu mensaje! Te contactaré pronto.');
-      form.reset();
+      // Configuración de parámetros de ID de cuenta e ID de template
+      console.log([...new FormData(form)]);
+      emailjs.sendForm('service_ys1wstd', 'template_w6785v6', form)
+        .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          
+          // Mostrar mensaje de éxito
+          formStatus.classList.remove('hidden', 'bg-red-100', 'dark:bg-red-900/20', 'text-red-700', 'dark:text-red-400');
+          formStatus.classList.add('bg-green-100', 'dark:bg-green-900/20', 'text-green-700', 'dark:text-green-400');
+          formStatus.innerHTML = '✅ ¡Mensaje enviado con éxito! Te contactaré pronto.';
+          
+          // Limpiar formulario
+          form.reset();
+          
+          // Ocultar mensaje después de 5 segundos
+          setTimeout(function() {
+            formStatus.classList.add('hidden');
+          }, 5000);
+        })
+        .catch(function(error) {
+          console.log('FAILED...', error);
+          
+          // Mostrar mensaje de error
+          formStatus.classList.remove('hidden', 'bg-green-100', 'dark:bg-green-900/20', 'text-green-700', 'dark:text-green-400');
+          formStatus.classList.add('bg-red-100', 'dark:bg-red-900/20', 'text-red-700', 'dark:text-red-400');
+          formStatus.innerHTML = '❌ Hubo un error al enviar el mensaje. Por favor, intenta de nuevo o escríbeme directamente a rojascastrojavier13@gmail.com';
+        })
+        .finally(function() {
+          // Rehabilitar botón
+          submitBtn.disabled = false;
+          btnText.classList.remove('hidden');
+          btnLoading.classList.add('hidden');
+        });
     });
   }
 </script>
