@@ -1,0 +1,22 @@
+---
+import { projects } from "../../data/projects";
+import ProjectCard from "./ProjectCard.astro";
+---
+
+<section
+  id="projects"
+  class="py-20 px-6 bg-gray-50-90 dark:bg-neutral-800-90 backdrop-blur-md transition-colors"
+>
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl font-bold mb-10">
+      Proyectos Destacados
+    </h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map(project => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+  </div>
+</section>
+
